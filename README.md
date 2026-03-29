@@ -84,7 +84,7 @@ BorsaApp/
 ### Adım 1 — Repoyu Klonlayın
 
 ```bash
-git clone https://github.com/KULLANICI_ADI/BorsaApp.git
+git clone https://github.com/Uaslntrk/BorsaApp.git
 cd BorsaApp
 ```
 
