@@ -1,0 +1,7 @@
+﻿     1>C:\Users\uacil\source\repos\BorsaApp\BorsaApp.Wpf\Themes\GlobalStyles.xaml(639,12): error MC3023: Key ├Âzniteli─şi yaln─▒zca bir Dictionary i├ğinde (├Ârne─şin ResourceDictionary) yer alan bir etikette kullan─▒labilir. Sat─▒r 639 Konum 12. [C:\Users\uacil\source\repos\BorsaApp\BorsaApp.Wpf\BorsaApp.Wpf.csproj]
+
+Olu┼şturma BA┼ŞARISIZ OLDU.
+    2 Uyar─▒
+    1 Hata
+
+Ge├ğen S├╝re 00:00:05.15

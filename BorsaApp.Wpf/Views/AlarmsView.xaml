@@ -8,94 +8,182 @@
         <vm:AlarmsViewModel/>
     </UserControl.DataContext>
 
-    <Grid Margin="20,16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid Margin="24,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="320"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Page Title -->
-        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="🔔  Fiyat Alarmları"/>
+        <!-- ─── ALARM LIST (Left) ─── -->
+        <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,20,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <!-- Content -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*" MinWidth="260"/>
-            </Grid.ColumnDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="Fiyat Alarmları" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                    <Button Content="🔄 Yenile" Command="{Binding LoadCommand}" Style="{StaticResource SecondaryButton}" 
+                            HorizontalAlignment="Right" Width="80" Height="30"/>
+                </DockPanel>
 
-            <!-- Alarm List -->
-            <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,12,0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Aktif Alarmlar" Margin="0,0,0,10"/>
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Alarms}"
-                              SelectedItem="{Binding Selected}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Kod"         Binding="{Binding AssetCode}"                     Width="80"/>
-                            <DataGridTextColumn Header="Hedef Fiyat" Binding="{Binding TargetPrice, StringFormat=N2}"  Width="110"/>
-                            <DataGridTextColumn Header="Yön"         Binding="{Binding Direction}"                    Width="80"/>
-                            <DataGridCheckBoxColumn Header="Auto"    Binding="{Binding IsAutoSell}"                   Width="60"/>
-                            <DataGridCheckBoxColumn Header="Aktif"   Binding="{Binding IsActive}"                     Width="60"/>
-                            <DataGridTextColumn Header="Oluşturulma" Binding="{Binding CreatedAt, StringFormat=dd.MM.yyyy HH:mm}"   Width="140"/>
-                            <DataGridTextColumn Header="Tetiklenme"  Binding="{Binding TriggeredAt, StringFormat=dd.MM.yyyy HH:mm}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </Border>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Alarms}" SelectedItem="{Binding Selected}" 
+                          AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Enstrüman" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SidebarBackgroundBrush}" CornerRadius="8" Padding="8,4" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding AssetCode}" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-            <!-- Add Alarm Form -->
-            <Border Grid.Column="1" Style="{StaticResource FormCard}">
+                        <DataGridTextColumn Header="Hedef Fiyat" Binding="{Binding TargetPrice, StringFormat=N2}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="0,0,12,0"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Yön" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Direction}" Value="Above">
+                                                        <Setter Property="Text" Value="YUKARI ▲"/>
+                                                        <Setter Property="Foreground" Value="#10B981"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Direction}" Value="Below">
+                                                        <Setter Property="Text" Value="AŞAĞI ▼"/>
+                                                        <Setter Property="Foreground" Value="#EF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Oto İşlem" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="10" Padding="6,2" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsAutoSell}" Value="True">
+                                                        <Setter Property="Background" Value="#204F6EF7"/>
+                                                        <Setter Property="BorderBrush" Value="#4F6EF7"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsAutoSell}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="AKTİF" FontSize="10" FontWeight="Bold" Foreground="#4F6EF7"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Oluşturulma" Binding="{Binding CreatedAt, StringFormat='dd.MM.yyyy HH:mm'}" Width="140" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        
+                        <DataGridTemplateColumn Header="Durum" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding TriggeredAt}" Value="{x:Null}">
+                                                        <Setter Property="Text" Value="Beklemede"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                                <Setter Property="Text" Value="{Binding TriggeredAt, StringFormat='🚨 Tetiklendi: {0:dd.MM.yyyy HH:mm}'}"/>
+                                                <Setter Property="Foreground" Value="#EF4444"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- ─── ALARM FORM (Right) ─── -->
+        <Border Grid.Column="1" Style="{StaticResource FormCard}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="Yeni Alarm Ekle"/>
-                    <Separator/>
+                    <TextBlock Text="Alarm Tanımla" Style="{StaticResource SectionTitle}" Margin="0,0,0,16"/>
+                    
+                    <TextBlock Text="HİSSE KODU" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Form.AssetCode, UpdateSourceTrigger=PropertyChanged}" Height="38" Margin="0,0,0,16"/>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="ENSTRÜMAN KODU" Margin="0,10,0,4"/>
-                    <TextBox Text="{Binding Form.AssetCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+                    <TextBlock Text="HEDEF FİYAT" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Form.TargetPrice, UpdateSourceTrigger=PropertyChanged}" Height="38" Margin="0,0,0,16"/>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="HEDEF FİYAT" Margin="0,0,0,4"/>
-                    <TextBox Text="{Binding Form.TargetPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
-
-                    <TextBlock Style="{StaticResource FormLabel}" Text="YÖN" Margin="0,0,0,4"/>
-                    <ComboBox SelectedValuePath="Content"
-                              SelectedValue="{Binding Form.Direction, Mode=TwoWay}"
-                              Margin="0,0,0,12">
-                        <ComboBoxItem Content="Above" IsSelected="True"/>
-                        <ComboBoxItem Content="Below"/>
+                    <TextBlock Text="KOŞUL" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Form.Direction, Mode=TwoWay}" Height="38" Margin="0,0,0,24">
+                        <ComboBoxItem Tag="Above" IsSelected="True">Fiyat Üzerine Çıkınca</ComboBoxItem>
+                        <ComboBoxItem Tag="Below">Fiyat Altına Düşünce</ComboBoxItem>
                     </ComboBox>
 
-                    <CheckBox Content="Otomatik Al/Sat Tetiklensin"
-                              IsChecked="{Binding Form.IsAutoSell}" Margin="0,0,0,12"/>
+                    <Border Background="{DynamicResource SidebarBackgroundBrush}" CornerRadius="12" Padding="14,12" Margin="0,0,0,20">
+                        <StackPanel>
+                            <CheckBox x:Name="AutoTradeCheck" Content="Otomatik Al/Sat Tetiklensin" IsChecked="{Binding Form.IsAutoSell}" Margin="0,0,0,12"/>
+                            
+                            <StackPanel Visibility="{Binding IsChecked, ElementName=AutoTradeCheck, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="MÜŞTERİ (OTO İŞLEM İÇİN)" Style="{StaticResource FormLabel}" Margin="0,4,0,6"/>
+                                <ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="Name" Height="38"/>
+                                <TextBlock Text="* Alarm tetiklendiğinde müşterinin bakiyesi varsa otomatik işlem açılır." FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="2,6,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="MÜŞTERİ (OTO İŞLEM)" Margin="0,0,0,4"/>
-                    <ComboBox ItemsSource="{Binding Customers}"
-                              SelectedItem="{Binding SelectedCustomer}"
-                              DisplayMemberPath="Name"
-                              Margin="0,0,0,20"/>
+                    <Button Content="➕ Alarm Oluştur" Command="{Binding CreateCommand}" Height="46" Margin="0,0,0,12">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd" CornerRadius="10">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#4F6EF7" Offset="0"/>
+                                            <GradientStop Color="#7C3AED" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="{TemplateBinding Content}" FontSize="14" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Opacity" Value="0.9"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    
+                    <Button Content="🗑️ Seçili Alarmı Sil" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButton}" Height="36"/>
 
-                    <Separator/>
-
-                    <Grid Margin="0,12,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="➕ Ekle"       Command="{Binding CreateCommand}" Margin="0,0,4,0"/>
-                        <Button Grid.Column="1" Content="⛔ Sil"        Command="{Binding DeleteCommand}"
-                                Margin="4,0,0,0" Style="{StaticResource DangerButton}"/>
-                    </Grid>
+                    <TextBlock Text="{Binding Message}" Foreground="{StaticResource SuccessBrush}" FontSize="12" Margin="0,16,0,0" 
+                               TextWrapping="Wrap" TextAlignment="Center"/>
                 </StackPanel>
-            </Border>
-        </Grid>
-
-        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
-                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

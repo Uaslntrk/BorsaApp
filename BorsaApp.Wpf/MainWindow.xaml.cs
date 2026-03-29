@@ -1,4 +1,4 @@
-﻿using BorsaApp.BLL.Services;
+using BorsaApp.BLL.Services;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,17 +9,57 @@ namespace BorsaApp.Wpf
 {
     public partial class MainWindow : Window
     {
+        private static readonly string[] PageTitles =
+        {
+            "Müşteri Yönetimi",
+            "Enstrüman Yönetimi",
+            "İşlem Yönetimi",
+            "Portföy Görünümü",
+            "Realized P/L Raporu",
+            "Fiyat Alarmları",
+            "Dashboard"
+        };
+
         public MainWindow()
         {
             InitializeComponent();
             LiveMarketService.Instance.PriceAlarmTriggered += Instance_PriceAlarmTriggered;
             LiveMarketService.Instance.Start();
+            TopBarDate.Text = DateTime.Now.ToString("dd MMM yyyy  HH:mm");
+
+            // Select dashboard by default
+            MainTabControl.SelectedIndex = 6;
         }
 
         public MainWindow(string role, int userId) : this()
         {
             if (role != "Admin")
+            {
                 TabMusteriler.Visibility = Visibility.Collapsed;
+                NavMusteriler.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void Nav_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton rb && rb.Tag is string tagStr && int.TryParse(tagStr, out int idx))
+            {
+                if (MainTabControl == null) return;
+                MainTabControl.SelectedIndex = idx;
+                if (PageTitleText != null && idx < PageTitles.Length)
+                    PageTitleText.Text = PageTitles[idx];
+                TryRefresh(MainTabControl.SelectedContent);
+            }
+        }
+
+        private static void TryRefresh(object? content)
+        {
+            if (content is FrameworkElement fe && fe.DataContext != null)
+            {
+                var prop = fe.DataContext.GetType().GetProperty("RefreshCommand");
+                if (prop?.GetValue(fe.DataContext) is ICommand cmd && cmd.CanExecute(null))
+                    cmd.Execute(null);
+            }
         }
 
         private void Instance_PriceAlarmTriggered(object? sender, Entities.PriceAlarmEventArgs e)
@@ -29,7 +69,6 @@ namespace BorsaApp.Wpf
                 string msg = e.Alarm.Direction == "Above"
                     ? $"🚨 ALARM! {e.Alarm.AssetCode} hedef fiyatı AŞTI! (Anlık: {e.TriggeredPrice:N2})"
                     : $"🚨 ALARM! {e.Alarm.AssetCode} hedef fiyatın ALTINA DÜŞTÜ! (Anlık: {e.TriggeredPrice:N2})";
-
                 await ShowToastNotification(msg);
             });
         }
@@ -46,12 +85,12 @@ namespace BorsaApp.Wpf
         {
             if (ThemeToggleButton.IsChecked == true)
             {
-                ThemeToggleButton.Content = "☀️ Açık";
+                ThemeToggleButton.Content = "☀️  Açık Tema";
                 SwitchTheme("DarkTheme");
             }
             else
             {
-                ThemeToggleButton.Content = "🌙 Koyu";
+                ThemeToggleButton.Content = "🌙  Koyu Tema";
                 SwitchTheme("LightTheme");
             }
         }
@@ -67,56 +106,9 @@ namespace BorsaApp.Wpf
             {
                 Source = new Uri($"pack://application:,,,/BorsaApp.Wpf;component/Themes/GlobalStyles.xaml")
             };
-
             app.Resources.MergedDictionaries.Clear();
             app.Resources.MergedDictionaries.Add(themeDict);
             app.Resources.MergedDictionaries.Add(stylesDict);
-        }
-
-        // ─── Auto-Refresh on Tab Change ───────────────────────────────────────
-        protected override void OnContentRendered(EventArgs e)
-        {
-            base.OnContentRendered(e);
-
-            // Find the TabControl in the visual tree and subscribe
-            var tab = FindTabControl(this);
-            if (tab != null)
-                tab.SelectionChanged += TabControl_SelectionChanged;
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Guard: only process direct TabControl selection changes, not nested grids/lists
-            if (e.Source is not TabControl tc) return;
-            if (tc.SelectedItem is not TabItem selectedTab) return;
-
-            // The TabItem.Content is a UserControl — get its DataContext
-            var view = selectedTab.Content as FrameworkElement;
-            if (view?.DataContext == null) return;
-
-            TryRefresh(view.DataContext);
-        }
-
-        private static void TryRefresh(object dataContext)
-        {
-            // Find the RefreshCommand property via reflection and execute it
-            var prop = dataContext.GetType().GetProperty("RefreshCommand");
-            if (prop == null) return;
-
-            if (prop.GetValue(dataContext) is ICommand cmd && cmd.CanExecute(null))
-                cmd.Execute(null);
-        }
-
-        private static TabControl? FindTabControl(DependencyObject parent)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is TabControl tc) return tc;
-                var found = FindTabControl(child);
-                if (found != null) return found;
-            }
-            return null;
         }
     }
 }

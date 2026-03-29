@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="BorsaApp.Wpf.Views.TradesView"
+<UserControl x:Class="BorsaApp.Wpf.Views.TradesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels">
@@ -7,128 +7,188 @@
         <vm:TradesViewModel/>
     </UserControl.DataContext>
 
-    <Grid Margin="20,16">
+    <Grid Margin="24,20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Title -->
-            <RowDefinition Height="Auto"/>
-            <!-- Form card -->
-            <RowDefinition Height="*"/>
-            <!-- Grid -->
-            <RowDefinition Height="Auto"/>
-            <!-- Status -->
+            <RowDefinition Height="Auto"/> <!-- Trade Form -->
+            <RowDefinition Height="*"/>    <!-- Trade History -->
         </Grid.RowDefinitions>
 
-        <!-- Page Title -->
-        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="🔄  İşlem Yönetimi"/>
-
-        <!-- Trade Form -->
-        <Border Grid.Row="1" Style="{StaticResource FormCard}" Margin="0,0,0,14">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Yeni İşlem" Margin="0,0,0,12"/>
-
-                <Grid Grid.Row="1">
+        <!-- ─── NEW TRADE FORM ─── -->
+        <Border Grid.Row="0" Style="{StaticResource FormCard}" Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="Yeni İşlem Girişi" Style="{StaticResource SectionTitle}" Margin="0,0,0,16"/>
+                
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="2*"/> <!-- Müşteri -->
+                        <ColumnDefinition Width="*"/>   <!-- Enstrüman -->
+                        <ColumnDefinition Width="Auto"/> <!-- Yön -->
+                        <ColumnDefinition Width="100"/> <!-- Lot -->
+                        <ColumnDefinition Width="120"/> <!-- Fiyat -->
+                        <ColumnDefinition Width="Auto"/> <!-- Buttons -->
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="MÜŞTERİ"/>
-                        <ComboBox ItemsSource="{Binding Customers}"
-                                  SelectedItem="{Binding SelectedCustomer}"
-                                  DisplayMemberPath="Name"
-                                  Margin="0,4,0,0"/>
+                    <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                        <TextBlock Text="MÜŞTERİ" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                        <ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="Name" Height="40"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="ENSTRÜMAN"/>
-                        <ComboBox ItemsSource="{Binding Assets}"
-                                  SelectedItem="{Binding SelectedAsset}"
-                                  DisplayMemberPath="Code"
-                                  Margin="0,4,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                        <TextBlock Text="ENSTRÜMAN" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                        <ComboBox ItemsSource="{Binding Assets}" SelectedItem="{Binding SelectedAsset}" DisplayMemberPath="Code" Height="40"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="2" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="YÖN"/>
-                        <ComboBox ItemsSource="{Binding BuySellOptions}"
-                                  SelectedItem="{Binding BuySell}"
-                                  Margin="0,4,0,0"/>
+                    <StackPanel Grid.Column="2" Margin="0,0,16,0" Width="100">
+                        <TextBlock Text="YÖN" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                        <ComboBox ItemsSource="{Binding BuySellOptions}" SelectedItem="{Binding BuySell}" Height="40"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="3" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="LOT"/>
-                        <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/>
+                    <StackPanel Grid.Column="3" Margin="0,0,16,0">
+                        <TextBlock Text="LOT" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                        <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="4" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="FİYAT"/>
-                        <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/>
+                    <StackPanel Grid.Column="4" Margin="0,0,16,0">
+                        <TextBlock Text="FİYAT" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                        <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="5" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="BAŞLANGIÇ"/>
-                        <DatePicker SelectedDate="{Binding FromDate}" Margin="0,4,0,0"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="6" Margin="0,0,10,0">
-                        <TextBlock Style="{StaticResource FormLabel}" Text="BİTİŞ"/>
-                        <DatePicker SelectedDate="{Binding ToDate}" Margin="0,4,0,0"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="7" Orientation="Vertical" VerticalAlignment="Bottom">
-                        <Button Content="💾 Kaydet" Command="{Binding SaveTradeCommand}" Width="90" Margin="0,0,0,6"/>
-                        <Button Content="Yenile" Command="{Binding RefreshCommand}" Width="90"
-                                Margin="0,0,0,6" Style="{StaticResource SecondaryButton}"/>
-                        <Button Content="Temizle" Command="{Binding ClearCommand}" Width="90"
-                                Style="{StaticResource SecondaryButton}"/>
+                    <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Bottom">
+                        <Button Content="💾 Kaydet" Command="{Binding SaveTradeCommand}" Width="100" Height="40" Margin="0,0,8,0"/>
+                        <Button Content="Temizle" Command="{Binding ClearCommand}" Width="80" Height="40" Style="{StaticResource SecondaryButton}"/>
                     </StackPanel>
                 </Grid>
-            </Grid>
+
+                <TextBlock Text="{Binding Message}" Foreground="{StaticResource SuccessBrush}" FontSize="12" Margin="0,8,0,0" 
+                           Visibility="{Binding Message, Converter={StaticResource StringToVisibilityConverter}}"/>
+            </StackPanel>
         </Border>
 
-        <!-- Trade List -->
-        <Border Grid.Row="2" Style="{StaticResource FormCard}">
+        <!-- ─── TRADE HISTORY ─── -->
+        <Border Grid.Row="1" Style="{StaticResource FormCard}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/> <!-- Filters -->
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="İşlem Geçmişi" Margin="0,0,16,0"/>
-                    <Button Content="⛔ İptal Et" Command="{Binding CancelTradeCommand}"
-                            Style="{StaticResource DangerButton}" Width="100"/>
-                </StackPanel>
-                <DataGrid Grid.Row="1"
-                          ItemsSource="{Binding Trades}"
-                          SelectedItem="{Binding SelectedTrade}"
-                          AutoGenerateColumns="False"
-                          IsReadOnly="True">
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="İşlem Geçmişi" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                    <Button Content="⛔ İptal Et" Command="{Binding CancelTradeCommand}" Style="{StaticResource DangerButton}" 
+                            HorizontalAlignment="Right" Width="100" Height="34"/>
+                </DockPanel>
+
+                <!-- History Filters -->
+                <Border Grid.Row="1" Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="12,8" Margin="0,0,0,16">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Filtrele:" VerticalAlignment="Center" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" Margin="0,0,12,0"/>
+                        <DatePicker SelectedDate="{Binding FromDate}" Width="110"/>
+                        <TextBlock Text="—" VerticalAlignment="Center" Margin="8,0" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <DatePicker SelectedDate="{Binding ToDate}" Width="110"/>
+                        <Button Content="Yenile" Command="{Binding RefreshCommand}" Margin="16,0,0,0" Width="70" Style="{StaticResource SecondaryButton}" Height="28"/>
+                    </StackPanel>
+                </Border>
+
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Trades}" SelectedItem="{Binding SelectedTrade}" 
+                          AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Id"      Binding="{Binding Id}"           Width="50"/>
-                        <DataGridTextColumn Header="Tarih"   Binding="{Binding TradeDate}"     Width="150"/>
-                        <DataGridTextColumn Header="Müşteri" Binding="{Binding CustomerName}"  Width="*"/>
-                        <DataGridTextColumn Header="Kod"     Binding="{Binding AssetCode}"     Width="90"/>
-                        <DataGridTextColumn Header="Yön"     Binding="{Binding BuySell}"       Width="70"/>
-                        <DataGridTextColumn Header="Lot"     Binding="{Binding Quantity}"      Width="70"/>
-                        <DataGridTextColumn Header="Fiyat"   Binding="{Binding Price}"         Width="90"/>
-                        <DataGridCheckBoxColumn Header="İptal" Binding="{Binding IsCancelled}" Width="60" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Zaman" Binding="{Binding TradeDate, StringFormat='dd.MM.yyyy HH:mm'}" Width="140"/>
+                        <DataGridTextColumn Header="Müşteri" Binding="{Binding CustomerName}" Width="*"/>
+                        <DataGridTemplateColumn Header="Enstrüman" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="4" Padding="6,2" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding AssetCode}" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTemplateColumn Header="Yön" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding BuySell}" FontWeight="Bold" HorizontalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BuySell}" Value="BUY">
+                                                        <Setter Property="Foreground" Value="#10B981"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding BuySell}" Value="SELL">
+                                                        <Setter Property="Foreground" Value="#EF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Lot" Binding="{Binding Quantity}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Fiyat" Binding="{Binding Price}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,12,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Durum" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="4" Padding="6,2" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsCancelled}" Value="True">
+                                                        <Setter Property="Background" Value="#1A000000"/>
+                                                        <Setter Property="BorderBrush" Value="#EF4444"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsCancelled}" Value="False">
+                                                        <Setter Property="Background" Value="#1A10B981"/>
+                                                        <Setter Property="BorderBrush" Value="#10B981"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsCancelled}" Value="True">
+                                                            <Setter Property="Text" Value="İPTAL"/>
+                                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsCancelled}" Value="False">
+                                                            <Setter Property="Text" Value="TAMAM"/>
+                                                            <Setter Property="Foreground" Value="#10B981"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                     <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsCancelled}" Value="True">
-                                    <Setter Property="Opacity" Value="0.4"/>
+                                    <Setter Property="Opacity" Value="0.5"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -136,8 +196,5 @@
                 </DataGrid>
             </Grid>
         </Border>
-
-        <TextBlock Grid.Row="3" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
-                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
     </Grid>
 </UserControl>

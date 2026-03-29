@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="BorsaApp.Wpf.Views.CustomersView"
+<UserControl x:Class="BorsaApp.Wpf.Views.CustomersView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels">
@@ -7,89 +7,171 @@
         <vm:CustomersViewModel/>
     </UserControl.DataContext>
 
-    <Grid Margin="20,16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid Margin="24,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="320"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Page Title -->
-        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="👤  Müşteri Yönetimi"/>
+        <!-- ─── CUSTOMER LIST (Left) ─── -->
+        <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,20,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <!-- Content -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*" MinWidth="260"/>
-            </Grid.ColumnDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="Müşteri Portföyü" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                    <Button Content="🔄 Yenile" Command="{Binding RefreshCommand}" Style="{StaticResource SecondaryButton}" 
+                            HorizontalAlignment="Right" Width="80" Height="30"/>
+                </DockPanel>
 
-            <!-- Liste -->
-            <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,12,0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Müşteri Listesi" Margin="0,0,0,10"/>
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Customers}"
-                              SelectedItem="{Binding Selected}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id"        Binding="{Binding Id}"             Width="50"/>
-                            <DataGridTextColumn Header="Ad Soyad"  Binding="{Binding Name}"            Width="*"/>
-                            <DataGridTextColumn Header="TC No"     Binding="{Binding TcNo}"            Width="130"/>
-                            <DataGridTextColumn Header="Nakit (₺)" Binding="{Binding CashBalance, StringFormat=N2}" Width="110"/>
-                            <DataGridTextColumn Header="Risk"      Binding="{Binding RiskLevel}"       Width="80"/>
-                            <DataGridCheckBoxColumn Header="Aktif" Binding="{Binding IsActive}"        Width="60"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </Border>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Customers}" SelectedItem="{Binding Selected}" 
+                          AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Müşteri" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="8,4">
+                                        <Border Width="34" Height="34" CornerRadius="17" Background="{DynamicResource AccentBrush}" Margin="0,0,12,0">
+                                            <TextBlock Text="{Binding Name, Converter={StaticResource FirstLetterConverter}}" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                       FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                            <TextBlock Text="{Binding TcNo}" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-            <!-- Form -->
-            <Border Grid.Column="1" Style="{StaticResource FormCard}">
+                        <DataGridTextColumn Header="Bakiye" Binding="{Binding CashBalance, StringFormat=C2, ConverterCulture='tr-TR'}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="0,0,12,0"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Risk" Width="90">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="10" Padding="8,2" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Yüksek">
+                                                        <Setter Property="Background" Value="#20EF4444"/>
+                                                        <Setter Property="BorderBrush" Value="#EF4444"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Orta">
+                                                        <Setter Property="Background" Value="#20F59E0B"/>
+                                                        <Setter Property="BorderBrush" Value="#F59E0B"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Düşük">
+                                                        <Setter Property="Background" Value="#2010B981"/>
+                                                        <Setter Property="BorderBrush" Value="#10B981"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding RiskLevel}" FontSize="11" FontWeight="Bold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RiskLevel}" Value="Yüksek">
+                                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RiskLevel}" Value="Orta">
+                                                            <Setter Property="Foreground" Value="#F59E0B"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RiskLevel}" Value="Düşük">
+                                                            <Setter Property="Foreground" Value="#10B981"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Durum" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8" HorizontalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <Setter Property="Fill" Value="#10B981"/>
+                                                        <Setter Property="ToolTip" Value="Aktif"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="Fill" Value="#64748B"/>
+                                                        <Setter Property="ToolTip" Value="Pasif"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- ─── CUSTOMER FORM (Right) ─── -->
+        <Border Grid.Column="1" Style="{StaticResource FormCard}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="Müşteri Formu"/>
-                    <Separator/>
+                    <TextBlock Text="Müşteri Detayı" Style="{StaticResource SectionTitle}" Margin="0,0,0,16"/>
+                    
+                    <TextBlock Text="AD SOYAD" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Form.Name, UpdateSourceTrigger=PropertyChanged}" Height="38" Margin="0,0,0,16"/>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="AD SOYAD" Margin="0,10,0,4"/>
-                    <TextBox Text="{Binding Form.Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+                    <TextBlock Text="TC KİMLİK NO" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Form.TcNo, UpdateSourceTrigger=PropertyChanged}" Height="38" Margin="0,0,0,16"/>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="TC NO (OPSİYONEL)" Margin="0,0,0,4"/>
-                    <TextBox Text="{Binding Form.TcNo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+                    <TextBlock Text="NAKİT BAKİYE (₺)" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Form.CashBalance, UpdateSourceTrigger=PropertyChanged}" Height="38" Margin="0,0,0,16"/>
 
-                    <TextBlock Style="{StaticResource FormLabel}" Text="NAKİT BAKİYE (₺)" Margin="0,0,0,4"/>
-                    <TextBox Text="{Binding Form.CashBalance, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
-
-                    <TextBlock Style="{StaticResource FormLabel}" Text="RİSK SEVİYESİ" Margin="0,0,0,4"/>
-                    <ComboBox SelectedItem="{Binding Form.RiskLevel}" Margin="0,0,0,12">
+                    <TextBlock Text="RİSK SEVİYESİ" Style="{StaticResource FormLabel}" Margin="0,0,0,6"/>
+                    <ComboBox SelectedItem="{Binding Form.RiskLevel}" Height="38" Margin="0,0,0,16">
                         <ComboBoxItem Content="Düşük"/>
                         <ComboBoxItem Content="Orta"/>
                         <ComboBoxItem Content="Yüksek"/>
                     </ComboBox>
 
-                    <CheckBox Content="Aktif Müşteri" IsChecked="{Binding Form.IsActive}" Margin="0,0,0,20"/>
+                    <CheckBox Content="Müşteri Aktif" IsChecked="{Binding Form.IsActive}" Margin="0,4,0,24"/>
 
-                    <Separator/>
+                    <Separator Margin="0,0,0,20"/>
 
-                    <!-- Action Buttons -->
-                    <UniformGrid Columns="2" Margin="0,12,0,0">
-                        <Button Content="Yenile"  Command="{Binding RefreshCommand}"  Margin="0,0,4,6" Style="{StaticResource SecondaryButton}"/>
-                        <Button Content="Temizle" Command="{Binding ClearCommand}"    Margin="4,0,0,6" Style="{StaticResource SecondaryButton}"/>
-                        <Button Content="Ekle"    Command="{Binding CreateCommand}"   Margin="0,0,4,0"/>
-                        <Button Content="Güncelle" Command="{Binding UpdateCommand}"  Margin="4,0,0,0"/>
+                    <UniformGrid Columns="2" Margin="0,0,0,8">
+                        <Button Content="Ekle" Command="{Binding CreateCommand}" Margin="0,0,4,0" Height="40"/>
+                        <Button Content="Güncelle" Command="{Binding UpdateCommand}" Margin="4,0,0,0" Height="40"/>
                     </UniformGrid>
-                    <Button Content="⛔  Sil (Pasif)" Command="{Binding DeleteCommand}"
-                            Margin="0,6,0,0" Style="{StaticResource DangerButton}"/>
-                </StackPanel>
-            </Border>
-        </Grid>
+                    
+                    <Button Content="Formu Temizle" Command="{Binding ClearCommand}" Style="{StaticResource SecondaryButton}" Height="36" Margin="0,0,0,8"/>
+                    
+                    <Button Content="⛔ Müşteriyi Sil (Pasif)" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButton}" Height="36"/>
 
-        <!-- Status -->
-        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
-                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
+                    <TextBlock Text="{Binding Message}" Foreground="{StaticResource SuccessBrush}" FontSize="12" Margin="0,12,0,0" 
+                               TextWrapping="Wrap" TextAlignment="Center"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>
