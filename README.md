@@ -198,5 +198,5 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 ---
 
 <div align="center">
-Geliştirici: <a href="https://github.com/KULLANICI_ADI">KULLANICI_ADI</a> &nbsp;|&nbsp; 2026
+Geliştirici: <a href="https://github.com/KULLANICI_ADI">uaslntrk</a> &nbsp;|&nbsp; 2026
 </div>
