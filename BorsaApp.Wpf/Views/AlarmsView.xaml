@@ -1,0 +1,101 @@
+<UserControl x:Class="BorsaApp.Wpf.Views.AlarmsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <UserControl.DataContext>
+        <vm:AlarmsViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="🔔  Fiyat Alarmları"/>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*" MinWidth="260"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Alarm List -->
+            <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Aktif Alarmlar" Margin="0,0,0,10"/>
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Alarms}"
+                              SelectedItem="{Binding Selected}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Kod"         Binding="{Binding AssetCode}"                     Width="80"/>
+                            <DataGridTextColumn Header="Hedef Fiyat" Binding="{Binding TargetPrice, StringFormat=N2}"  Width="110"/>
+                            <DataGridTextColumn Header="Yön"         Binding="{Binding Direction}"                    Width="80"/>
+                            <DataGridCheckBoxColumn Header="Auto"    Binding="{Binding IsAutoSell}"                   Width="60"/>
+                            <DataGridCheckBoxColumn Header="Aktif"   Binding="{Binding IsActive}"                     Width="60"/>
+                            <DataGridTextColumn Header="Oluşturulma" Binding="{Binding CreatedAt, StringFormat=dd.MM.yyyy HH:mm}"   Width="140"/>
+                            <DataGridTextColumn Header="Tetiklenme"  Binding="{Binding TriggeredAt, StringFormat=dd.MM.yyyy HH:mm}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Add Alarm Form -->
+            <Border Grid.Column="1" Style="{StaticResource FormCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="Yeni Alarm Ekle"/>
+                    <Separator/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="ENSTRÜMAN KODU" Margin="0,10,0,4"/>
+                    <TextBox Text="{Binding Form.AssetCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="HEDEF FİYAT" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Form.TargetPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="YÖN" Margin="0,0,0,4"/>
+                    <ComboBox SelectedValuePath="Content"
+                              SelectedValue="{Binding Form.Direction, Mode=TwoWay}"
+                              Margin="0,0,0,12">
+                        <ComboBoxItem Content="Above" IsSelected="True"/>
+                        <ComboBoxItem Content="Below"/>
+                    </ComboBox>
+
+                    <CheckBox Content="Otomatik Al/Sat Tetiklensin"
+                              IsChecked="{Binding Form.IsAutoSell}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="MÜŞTERİ (OTO İŞLEM)" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding Customers}"
+                              SelectedItem="{Binding SelectedCustomer}"
+                              DisplayMemberPath="Name"
+                              Margin="0,0,0,20"/>
+
+                    <Separator/>
+
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="➕ Ekle"       Command="{Binding CreateCommand}" Margin="0,0,4,0"/>
+                        <Button Grid.Column="1" Content="⛔ Sil"        Command="{Binding DeleteCommand}"
+                                Margin="4,0,0,0" Style="{StaticResource DangerButton}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
+                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
+    </Grid>
+</UserControl>

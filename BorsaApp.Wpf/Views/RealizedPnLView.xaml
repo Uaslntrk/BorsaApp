@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="BorsaApp.Wpf.Views.RealizedPnLView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels">
+
+    <UserControl.DataContext>
+        <vm:RealizedPnLViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Title -->
+            <RowDefinition Height="Auto"/>
+            <!-- Toolbar -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid -->
+            <RowDefinition Height="Auto"/>
+            <!-- Summary -->
+            <RowDefinition Height="Auto"/>
+            <!-- Status -->
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="💰  Realized P/L"/>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="1" Style="{StaticResource FormCard}" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Başlangıç:" VerticalAlignment="Center"
+                           Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" Margin="0,0,6,0"/>
+                <DatePicker SelectedDate="{Binding FromDate}" Width="130"/>
+                <TextBlock Text="Bitiş:" VerticalAlignment="Center"
+                           Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" Margin="14,0,6,0"/>
+                <DatePicker SelectedDate="{Binding ToDate}" Width="130"/>
+                <TextBlock Text="Müşteri:" VerticalAlignment="Center"
+                           Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" Margin="14,0,6,0"/>
+                <ComboBox Width="220"
+                          ItemsSource="{Binding CustomerOptions}"
+                          SelectedItem="{Binding SelectedCustomer}"
+                          DisplayMemberPath="Name"/>
+                <Button Content="Yenile"   Command="{Binding RefreshCommand}"     Margin="12,0,0,0" Width="80"/>
+                <Button Content="📊 Excel" Command="{Binding ExportExcelCommand}" Margin="8,0,0,0"  Width="90"
+                        Style="{StaticResource SecondaryButton}"/>
+                <Button Content="📄 PDF"   Command="{Binding ExportPdfCommand}"   Margin="8,0,0,0"  Width="72"
+                        Style="{StaticResource SecondaryButton}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- DataGrid -->
+        <Border Grid.Row="2" Style="{StaticResource FormCard}" Margin="0,0,0,12">
+            <DataGrid ItemsSource="{Binding Rows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Tarih"       Binding="{Binding TradeDate}"       Width="150"/>
+                    <DataGridTextColumn Header="Müşteri"     Binding="{Binding CustomerName}"    Width="*"/>
+                    <DataGridTextColumn Header="Kod"         Binding="{Binding AssetCode}"       Width="90"/>
+                    <DataGridTextColumn Header="Lot"         Binding="{Binding SellQty}"         Width="70"/>
+                    <DataGridTextColumn Header="Satış"       Binding="{Binding SellPrice}"       Width="90"/>
+                    <DataGridTextColumn Header="Ort.Maliyet" Binding="{Binding AvgCostAtSell}"   Width="110"/>
+                    <DataGridTextColumn Header="Realized P/L" Binding="{Binding RealizedPL}"     Width="110">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="P/L %"       Binding="{Binding RealizedPLPct}"   Width="70"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Summary -->
+        <Border Grid.Row="3" Style="{StaticResource StatCard}" Margin="0,0,0,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Toplam Realized P/L:" Foreground="{DynamicResource SecondaryTextBrush}"
+                           FontSize="13" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding TotalRealized}" FontSize="18" FontWeight="Bold"
+                           Foreground="{StaticResource SuccessBrush}"/>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="4" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
+                   TextWrapping="Wrap" FontSize="12"/>
+    </Grid>
+</UserControl>

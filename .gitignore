@@ -1,0 +1,77 @@
+## .NET / Visual Studio
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# dist / publish output
+dist/
+publish/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docview
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# MSBuild telemetry (not a build output)
+*.binlog
+
+# Crash dump files
+*.dmp
+
+# Rider IDE
+.idea/
+*.sln.iml
+
+# Build log files (project-specific)
+build.log
+build2.log
+build_error.txt
+build_error2.txt
+build_error_en.txt
+build_error_wpf.txt
+build_error_wpf2.txt
+build_errors.log
+msbuild.log
+BorsaApp.Wpf/build_diag.txt
+BorsaApp.Wpf/build_log.txt
+BorsaApp.Wpf/build_log_ascii.txt
+BorsaApp.Wpf/build_norm.txt
+BorsaApp.Wpf/build_output.txt
+BorsaApp.Wpf/nuget.log
+
+# OS
+.DS_Store
+Thumbs.db

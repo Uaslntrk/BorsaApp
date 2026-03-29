@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="BorsaApp.Wpf.Views.TradesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels">
+
+    <UserControl.DataContext>
+        <vm:TradesViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Title -->
+            <RowDefinition Height="Auto"/>
+            <!-- Form card -->
+            <RowDefinition Height="*"/>
+            <!-- Grid -->
+            <RowDefinition Height="Auto"/>
+            <!-- Status -->
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="🔄  İşlem Yönetimi"/>
+
+        <!-- Trade Form -->
+        <Border Grid.Row="1" Style="{StaticResource FormCard}" Margin="0,0,0,14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Yeni İşlem" Margin="0,0,0,12"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="MÜŞTERİ"/>
+                        <ComboBox ItemsSource="{Binding Customers}"
+                                  SelectedItem="{Binding SelectedCustomer}"
+                                  DisplayMemberPath="Name"
+                                  Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="ENSTRÜMAN"/>
+                        <ComboBox ItemsSource="{Binding Assets}"
+                                  SelectedItem="{Binding SelectedAsset}"
+                                  DisplayMemberPath="Code"
+                                  Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="YÖN"/>
+                        <ComboBox ItemsSource="{Binding BuySellOptions}"
+                                  SelectedItem="{Binding BuySell}"
+                                  Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="LOT"/>
+                        <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="FİYAT"/>
+                        <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="5" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="BAŞLANGIÇ"/>
+                        <DatePicker SelectedDate="{Binding FromDate}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="6" Margin="0,0,10,0">
+                        <TextBlock Style="{StaticResource FormLabel}" Text="BİTİŞ"/>
+                        <DatePicker SelectedDate="{Binding ToDate}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="7" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <Button Content="💾 Kaydet" Command="{Binding SaveTradeCommand}" Width="90" Margin="0,0,0,6"/>
+                        <Button Content="Yenile" Command="{Binding RefreshCommand}" Width="90"
+                                Margin="0,0,0,6" Style="{StaticResource SecondaryButton}"/>
+                        <Button Content="Temizle" Command="{Binding ClearCommand}" Width="90"
+                                Style="{StaticResource SecondaryButton}"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Trade List -->
+        <Border Grid.Row="2" Style="{StaticResource FormCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="İşlem Geçmişi" Margin="0,0,16,0"/>
+                    <Button Content="⛔ İptal Et" Command="{Binding CancelTradeCommand}"
+                            Style="{StaticResource DangerButton}" Width="100"/>
+                </StackPanel>
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding Trades}"
+                          SelectedItem="{Binding SelectedTrade}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id"      Binding="{Binding Id}"           Width="50"/>
+                        <DataGridTextColumn Header="Tarih"   Binding="{Binding TradeDate}"     Width="150"/>
+                        <DataGridTextColumn Header="Müşteri" Binding="{Binding CustomerName}"  Width="*"/>
+                        <DataGridTextColumn Header="Kod"     Binding="{Binding AssetCode}"     Width="90"/>
+                        <DataGridTextColumn Header="Yön"     Binding="{Binding BuySell}"       Width="70"/>
+                        <DataGridTextColumn Header="Lot"     Binding="{Binding Quantity}"      Width="70"/>
+                        <DataGridTextColumn Header="Fiyat"   Binding="{Binding Price}"         Width="90"/>
+                        <DataGridCheckBoxColumn Header="İptal" Binding="{Binding IsCancelled}" Width="60" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCancelled}" Value="True">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <TextBlock Grid.Row="3" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
+                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
+    </Grid>
+</UserControl>

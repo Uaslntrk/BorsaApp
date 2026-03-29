@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="BorsaApp.Wpf.Views.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:BorsaApp.Wpf.ViewModels">
+
+    <UserControl.DataContext>
+        <vm:CustomersViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <TextBlock Grid.Row="0" Style="{StaticResource PageTitle}" Text="👤  Müşteri Yönetimi"/>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*" MinWidth="260"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Liste -->
+            <Border Grid.Column="0" Style="{StaticResource FormCard}" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{StaticResource SectionTitle}" Text="Müşteri Listesi" Margin="0,0,0,10"/>
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Customers}"
+                              SelectedItem="{Binding Selected}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id"        Binding="{Binding Id}"             Width="50"/>
+                            <DataGridTextColumn Header="Ad Soyad"  Binding="{Binding Name}"            Width="*"/>
+                            <DataGridTextColumn Header="TC No"     Binding="{Binding TcNo}"            Width="130"/>
+                            <DataGridTextColumn Header="Nakit (₺)" Binding="{Binding CashBalance, StringFormat=N2}" Width="110"/>
+                            <DataGridTextColumn Header="Risk"      Binding="{Binding RiskLevel}"       Width="80"/>
+                            <DataGridCheckBoxColumn Header="Aktif" Binding="{Binding IsActive}"        Width="60"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Form -->
+            <Border Grid.Column="1" Style="{StaticResource FormCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="Müşteri Formu"/>
+                    <Separator/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="AD SOYAD" Margin="0,10,0,4"/>
+                    <TextBox Text="{Binding Form.Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="TC NO (OPSİYONEL)" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Form.TcNo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="NAKİT BAKİYE (₺)" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Form.CashBalance, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource FormLabel}" Text="RİSK SEVİYESİ" Margin="0,0,0,4"/>
+                    <ComboBox SelectedItem="{Binding Form.RiskLevel}" Margin="0,0,0,12">
+                        <ComboBoxItem Content="Düşük"/>
+                        <ComboBoxItem Content="Orta"/>
+                        <ComboBoxItem Content="Yüksek"/>
+                    </ComboBox>
+
+                    <CheckBox Content="Aktif Müşteri" IsChecked="{Binding Form.IsActive}" Margin="0,0,0,20"/>
+
+                    <Separator/>
+
+                    <!-- Action Buttons -->
+                    <UniformGrid Columns="2" Margin="0,12,0,0">
+                        <Button Content="Yenile"  Command="{Binding RefreshCommand}"  Margin="0,0,4,6" Style="{StaticResource SecondaryButton}"/>
+                        <Button Content="Temizle" Command="{Binding ClearCommand}"    Margin="4,0,0,6" Style="{StaticResource SecondaryButton}"/>
+                        <Button Content="Ekle"    Command="{Binding CreateCommand}"   Margin="0,0,4,0"/>
+                        <Button Content="Güncelle" Command="{Binding UpdateCommand}"  Margin="4,0,0,0"/>
+                    </UniformGrid>
+                    <Button Content="⛔  Sil (Pasif)" Command="{Binding DeleteCommand}"
+                            Margin="0,6,0,0" Style="{StaticResource DangerButton}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Status -->
+        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="{StaticResource DangerBrush}"
+                   Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
+    </Grid>
+</UserControl>

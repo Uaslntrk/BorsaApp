@@ -1,0 +1,23 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Light Theme Colors -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush"                   Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="PanelBackgroundBrush"                    Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush"                  Color="#2A2F4C"/>
+    <SolidColorBrush x:Key="SidebarTextBrush"                        Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="PrimaryTextBrush"                        Color="#0F172A"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush"                      Color="#64748B"/>
+
+    <SolidColorBrush x:Key="BorderBrushColor"                        Color="#E2E8F0"/>
+
+    <!-- Inputs -->
+    <SolidColorBrush x:Key="InputBackgroundBrush"                    Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="InputTextBrush"                          Color="#0F172A"/>
+
+    <!-- DataGrid -->
+    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush"           Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="DataGridBackgroundBrush"                 Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DataGridRowBackgroundBrush"              Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DataGridAlternatingRowBackgroundBrush"   Color="#F8FAFC"/>
+</ResourceDictionary>
